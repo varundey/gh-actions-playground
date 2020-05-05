@@ -7,7 +7,7 @@ on:
       - "package.json"
 jobs:
   fetch_information:
-    if: github.event.pull_request.merged == 'true'
+#    if: github.event.pull_request.merged == 'true'
     runs-on: ubuntu-latest
     outputs:
       LAST_RELEASED_VERSION: ${{ steps.released_version.outputs.LAST_RELEASED_VERSION }}
