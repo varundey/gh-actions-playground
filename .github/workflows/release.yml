@@ -1,0 +1,36 @@
+name: "Release lib"
+on: push
+#    paths:
+#      - "package.json"
+#  pull_request:
+#    types: [closed]
+jobs:
+  fetch_information:
+    runs-on: ubuntu-latest
+    outputs:
+      LAST_RELEASED_VERSION: ${{ steps.released_version.outputs.LAST_RELEASED_VERSION }}
+      PACKAGE_VERSION: ${{ steps.package_version.outputs.PACKAGE_VERSION }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Fetch all remote tags"
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: "Get last released version"
+        id: "released_version"
+        run: echo "::set-output name=LAST_RELEASED_VERSION::$(git tag -l | tail -1)"
+      - name: "Get package version"
+        id: "package_version"
+        run: echo "::set-output name=PACKAGE_VERSION::$(node -p -e "require('./package.json').version")"
+  release_library:
+    runs-on: ubuntu-latest
+    needs: fetch_information
+    if: ${{ needs.fetch_information.outputs.LAST_RELEASED_VERSION != needs.fetch_information.outputs.PACKAGE_VERSION }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Set GitHub username and email"
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions Bot"
+      - name: "Add and commit tag"
+        run: git tag -a v${{needs.fetch_information.outputs.PACKAGE_VERSION}} -m "Release version ${{needs.fetch_information.outputs.PACKAGE_VERSION}} :rocket:"
+      - name: "Push tag to remote"
+        run: git push origin ${{needs.fetch_information.outputs.PACKAGE_VERSION}}
