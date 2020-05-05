@@ -38,6 +38,6 @@ jobs:
       - name: "Add and commit tag"
         run: |
           git tag -a v${{needs.fetch_information.outputs.PACKAGE_VERSION}} -m "Release version ${{needs.fetch_information.outputs.PACKAGE_VERSION}} :rocket:"
-          git push origin ${{needs.fetch_information.outputs.PACKAGE_VERSION}}
+          git push origin v${{needs.fetch_information.outputs.PACKAGE_VERSION}}
 #      - name: "Push tag to remote"
 #        run: git push origin ${{needs.fetch_information.outputs.PACKAGE_VERSION}}
