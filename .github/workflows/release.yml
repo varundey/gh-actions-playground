@@ -24,7 +24,7 @@ jobs:
   release_library:
     runs-on: ubuntu-latest
     needs: fetch_information
-    if: ${{ ${{needs.fetch_information.outputs.LAST_RELEASED_VERSION}} != v${{needs.fetch_information.outputs.PACKAGE_VERSION}} }}
+    if: ${{ needs.fetch_information.outputs.LAST_RELEASED_VERSION != v${{needs.fetch_information.outputs.PACKAGE_VERSION}} }}
     steps:
       - uses: actions/checkout@v2
         with:
